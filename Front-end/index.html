@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <!-- Metadados, fontes e arquivos de estilo e script usados pela página. -->
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f8fafc">
+  <meta name="description" content="Painel de análise e predição espaço-temporal de risco urbano em Curitiba, Paraná.">
+  <title>DataRisk AI | Risco Urbano em Curitiba</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/mapa.css">
+  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin="" defer></script>
+  <script src="js/mapa.js" defer></script>
+  <script src="js/predicao.js" defer></script>
+</head>
+<body>
+  <!-- Contêiner principal da interface. -->
+  <div class="app-shell">
+    <!-- Cabeçalho com a marca, o estado da interface e a versão do protótipo. -->
+    <header class="topbar">
+      <a class="brand" href="#inicio" aria-label="DataRisk AI, página inicial">
+        <span class="brand-symbol" aria-hidden="true"><span></span><span></span><span></span><span></span></span>
+        <span class="brand-word">DataRisk AI<span class="brand-dot">.</span></span>
+        <span class="brand-separator" aria-hidden="true"></span>
+        <span class="brand-descriptor">INTELIGÊNCIA TERRITORIAL</span>
+      </a>
+      <div class="topbar-right"><span class="system-pill"><span class="pulse"></span> INTERFACE OPERACIONAL</span><span class="topbar-version">v0.1 / PROTÓTIPO</span></div>
+    </header>
+
+    <main id="inicio" class="workspace">
+      <!-- Título, descrição e local geográfico em análise. -->
+      <section class="page-heading" aria-labelledby="page-title">
+        <div><div class="eyebrow"><span class="eyebrow-index">01 / 03</span> ANÁLISE ESPAÇO-TEMPORAL</div><h1 id="page-title">Visão territorial<span class="heading-period">.</span></h1><p>Explore Curitiba e configure uma previsão de risco por local, data e horário.</p></div>
+        <div class="heading-meta"><span>ÁREA DE ANÁLISE</span><strong>CURITIBA / PR <span class="tiny-chevron">↗</span></strong><small>COORDENADAS WGS 84</small></div>
+      </section>
+
+      <!-- Indicadores resumidos e legenda das categorias de risco. -->
+      <section class="kpi-bar" aria-label="Informações do painel">
+        <div class="kpi"><span class="kpi-label">01 / COBERTURA</span><strong>Curitiba, PR</strong><span class="kpi-sub">Região inicial do mapa</span></div>
+        <div class="kpi"><span class="kpi-label">02 / RESOLUÇÃO</span><strong>Espaço + tempo</strong><span class="kpi-sub">Coordenadas e horário</span></div>
+        <div class="kpi"><span class="kpi-label">03 / PREVISÃO</span><strong id="kpi-api-status">Modo demonstração</strong><span class="kpi-sub" id="kpi-api-detail">Simulação local, sem API de previsão</span></div>
+        <div class="kpi kpi-legend"><span class="kpi-label">04 / CLASSIFICAÇÃO</span><div class="legend-inline"><span><i class="legend-mark low"></i>BAIXO</span><span><i class="legend-mark medium"></i>MÉDIO</span><span><i class="legend-mark high"></i>ALTO</span></div><span class="kpi-sub">Níveis fictícios de demonstração</span></div>
+      </section>
+
+      <!-- Área de trabalho com mapa, formulário e resultado da previsão. -->
+      <div class="dashboard-grid">
+        <!-- Mapa interativo, controles, coordenadas selecionadas e créditos. -->
+        <section class="map-panel" aria-labelledby="map-title">
+          <div class="panel-header"><div><span class="section-index">A / VISUALIZAÇÃO GEOGRÁFICA</span><h2 id="map-title">Mapa de análise</h2></div><div class="map-header-actions"><span class="live-indicator"><span></span>MAPA INTERATIVO</span></div></div>
+          <div class="map-toolbar"><div class="map-toolbar-left"><span class="toolbar-title">CAMADA ATIVA</span><span class="layer-tag"><span class="layer-dot"></span> BASE CARTOGRÁFICA</span></div><button id="reset-map" class="text-button" type="button">↗ RECENTRALIZAR</button></div>
+          <div class="map-area"><div id="map" role="application" aria-label="Mapa interativo de Curitiba. Clique no mapa para selecionar latitude e longitude."></div><div class="map-crosshair" aria-hidden="true">+</div><div class="map-overlay"><span class="overlay-label">LOCAL SELECIONADO</span><strong id="map-coordinates">−25.42840, −49.27330</strong><span id="map-selection-hint">Clique no mapa para reposicionar</span></div></div>
+          <div class="map-footer"><span><span class="footer-dot"></span> CARTOGRAFIA: OPENSTREETMAP</span><span>SELEÇÃO POR CLIQUE • EPSG:4326</span></div>
+        </section>
+
+        <!-- Formulário de endereço, coordenadas e contexto temporal. -->
+        <aside class="side-panel" aria-labelledby="forecast-title">
+          <div class="panel-header forecast-header"><div><span class="section-index">B / PARÂMETROS DE ENTRADA</span><h2 id="forecast-title">Nova previsão</h2></div><span class="step-tag">01 → 02</span></div>
+          <form id="prediction-form" class="prediction-form">
+            <div class="form-section-title"><span class="number-label">01</span><span>LOCALIZAÇÃO</span><span class="form-section-line"></span></div>
+            <label class="field"><span class="field-label">BUSCAR ENDEREÇO <span class="optional">OPCIONAL</span></span><div class="search-control"><input id="address" type="search" placeholder="Ex.: Rua XV de Novembro, Curitiba" autocomplete="street-address"><button type="button" id="search-address" title="Buscar endereço em Curitiba" aria-label="Buscar endereço em Curitiba">↗</button></div><small id="geocode-feedback" class="field-help" aria-live="polite">Busque um endereço em Curitiba ou clique no mapa.</small></label>
+            <div class="two-fields"><label class="field"><span class="field-label">LATITUDE</span><input type="number" id="latitude" name="latitude" min="-90" max="90" step="any" required value="-25.42840"></label><label class="field"><span class="field-label">LONGITUDE</span><input type="number" id="longitude" name="longitude" min="-180" max="180" step="any" required value="-49.27330"></label></div>
+            <div class="form-section-title middle"><span class="number-label">02</span><span>CONTEXTO TEMPORAL</span><span class="form-section-line"></span></div>
+            <div class="two-fields"><label class="field"><span class="field-label">DIA DA SEMANA</span><select id="weekday" name="dia_semana" required><option value="0">Segunda-feira</option><option value="1">Terça-feira</option><option value="2">Quarta-feira</option><option value="3">Quinta-feira</option><option value="4">Sexta-feira</option><option value="5">Sábado</option><option value="6">Domingo</option></select></label><label class="field"><span class="field-label">MÊS</span><select id="month" name="mes" required><option value="1">Janeiro</option><option value="2">Fevereiro</option><option value="3">Março</option><option value="4">Abril</option><option value="5">Maio</option><option value="6">Junho</option><option value="7">Julho</option><option value="8">Agosto</option><option value="9">Setembro</option><option value="10">Outubro</option><option value="11">Novembro</option><option value="12">Dezembro</option></select></label></div>
+            <label class="field"><span class="field-label">HORÁRIO DA ANÁLISE</span><div class="time-control"><input type="time" id="time" name="horario" value="18:00" required><span>HORÁRIO LOCAL</span></div></label>
+            <button class="submit-button" id="submit-prediction" type="submit"><span id="submit-label">SIMULAR PREVISÃO</span><span aria-hidden="true">↗</span></button>
+            <p id="request-error" class="request-error" role="alert" hidden></p>
+            <p class="form-disclaimer">Modo demonstração: os resultados são fictícios e gerados localmente, sem consultar a API de previsão.</p>
+          </form>
+        </aside>
+
+        <!-- Resultado da simulação ou da previsão retornada pela API. -->
+        <section class="result-panel" aria-labelledby="result-title">
+          <div class="result-top"><div><span class="section-index">C / SAÍDA DA SIMULAÇÃO</span><h2 id="result-title">Resultado da simulação</h2></div><span class="result-state" id="result-state">AGUARDANDO SIMULAÇÃO</span></div>
+          <div class="result-content" id="result-content" aria-live="polite"><div class="empty-symbol" aria-hidden="true">◎</div><div><strong>Nenhuma simulação executada</strong><p>Selecione um local, configure o período e clique em “Simular previsão” para visualizar um resultado fictício.</p></div></div>
+        </section>
+      </div>
+      <!-- Créditos e observações sobre o protótipo. -->
+      <footer class="app-footer"><span>DataRisk AI / PROTÓTIPO DE PESQUISA</span><span>DADOS GEOGRÁFICOS © OPENSTREETMAP CONTRIBUTORS</span><span>MODELOS PREDITIVOS NÃO SUBSTITUEM DECISÃO HUMANA</span></footer>
+    </main>
+  </div>
+</body>
+</html>

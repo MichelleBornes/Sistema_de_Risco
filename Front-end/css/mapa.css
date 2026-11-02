@@ -1,0 +1,141 @@
+/* Define a área quadrada que contém o mapa e limita o conteúdo às bordas. */
+.map-area {
+  position: relative;
+  flex: none;
+  width: calc(100% - 32px);
+  aspect-ratio: 1 / 1;
+  min-width: 0;
+  min-height: 0;
+  margin: 16px;
+  border: 1px solid var(--border-dark);
+  background: #e9eef0;
+  overflow: hidden;
+}
+/* Faz o mapa Leaflet preencher toda a área disponível. */
+#map {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 1;
+}
+/* Ajusta o fundo e a tipografia padrão do mapa e de seus controles. */
+.leaflet-container {
+  background: #e9eef0;
+  font-family: var(--sans);
+}
+.leaflet-control-zoom {
+  border: 1px solid #d7dfe5!important;
+  border-radius: 0!important;
+  box-shadow: none!important;
+}
+.leaflet-control-zoom a {
+  border-radius: 0!important;
+  color: #29465e!important;
+}
+.leaflet-control-attribution {
+  font-size: 9px!important;
+  background: rgba(255,255,255,.86)!important;
+}
+/* Sobrepõe uma mira visual central sem bloquear os cliques no mapa. */
+.map-crosshair {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  pointer-events: none;
+  transform: translate(-50%,-50%);
+  font: 24px var(--mono);
+  color: #1d4865;
+  opacity: .38;
+  z-index: 400;
+}
+/* Mostra as coordenadas e instruções sobre o ponto selecionado. */
+.map-overlay {
+  position: absolute;
+  z-index: 500;
+  left: 19px;
+  bottom: 29px;
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  background: rgba(255,255,255,.96);
+  border: 1px solid #dce4e9;
+  padding: 15px 19px;
+  box-shadow: none;
+  pointer-events: none;
+}
+.overlay-label {
+  font-size: 9px;
+  color: #8496a6;
+}
+.map-overlay strong {
+  font-size: 13px;
+  color: #2a455c;
+  letter-spacing: 0;
+}
+.map-overlay #map-selection-hint {
+  font-size: 9px;
+  color: #99a8b6;
+  letter-spacing: 0;
+}
+/* Desenha o marcador usado para indicar o ponto selecionado. */
+.selection-pin {
+  height: 18px;
+  width: 18px;
+  display: block;
+  border-radius: 50%;
+  background: #224a64;
+  border: 4px solid white;
+  box-shadow: 0 0 0 1px #224a64;
+}
+/* Define o marcador circular e as cores dos níveis de risco. */
+.risk-point {
+  display: block;
+  width: 16px;
+  height: 16px;
+  border: 2px solid white;
+  border-radius: 50%;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.13);
+}
+.risk-point.low {
+  background: #10b981;
+}
+.risk-point.medium {
+  background: #f59e0b;
+}
+.risk-point.high {
+  background: #ef4444;
+}
+/* Adapta controles e sobreposição do mapa para telas pequenas. */
+@media (max-width:600px) {
+  .map-panel .panel-header {
+    flex-wrap: wrap;
+    gap: 14px;
+  }
+  .map-toolbar {
+    height: auto;
+    min-height: 45px;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+  .map-toolbar-left {
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .map-area {
+    width: calc(100% - 24px);
+    margin: 12px;
+  }
+  .map-overlay {
+    left: 12px;
+    bottom: 30px;
+    max-width: calc(100% - 24px);
+    padding: 10px 12px;
+    gap: 5px;
+  }
+  .map-overlay strong {
+    font-size: 12px;
+  }
+}
